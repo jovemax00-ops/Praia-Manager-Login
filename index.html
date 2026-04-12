@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -63,24 +62,22 @@ a{color:inherit}
 
 /* ── LOGIN SCREEN ── */
 #login-screen{
-display:none;position:fixed;inset:0;background:var(–dark);
-z-index:9999;align-items:center;justify-content:center;flex-direction:column;
-padding:24px;
+  display:none;position:fixed;inset:0;background:var(--dark);
+  z-index:9999;align-items:center;justify-content:center;flex-direction:column;
+  padding:24px;
 }
 #login-screen.show{display:flex;}
 .login-card{
-background:var(–card);border:1px solid var(–border);border-radius:24px;
-padding:28px 22px;width:100%;max-width:360px;
+  background:var(--card);border:1px solid var(--border);border-radius:24px;
+  padding:28px 22px;width:100%;max-width:360px;
 }
 </style>
-
 </head>
 <body>
 
 <!-- ══════════════════════════════════════
      TELA DE LOGIN
 ══════════════════════════════════════ -->
-
 <div id="login-screen">
   <div class="login-card">
     <div style="text-align:center;margin-bottom:22px">
@@ -106,7 +103,6 @@ padding:28px 22px;width:100%;max-width:360px;
 <!-- ══════════════════════════════════════
      APP PRINCIPAL
 ══════════════════════════════════════ -->
-
 <div id="app" style="display:none">
 <div id="toast" class="toast"></div>
 <div id="pg-dashboard" class="page active">
@@ -551,7 +547,13 @@ function loadFromCloud() {
   sbApi('bebidas', 'GET', null, '?tenant_id=eq.' + encodeURIComponent(tid) + '&order=created_at.asc').then(function(data) {
     if (!data || !Array.isArray(data)) return;
     if (!data.length) { syncEntity('drinks', drinks); return; }
-    drinks = data.map(function(b) {
+    // Deduplica por nome antes de salvar
+    var seen = {};
+    var deduped = [];
+    data.forEach(function(b) {
+      if (!seen[b.nome]) { seen[b.nome] = true; deduped.push(b); }
+    });
+    drinks = deduped.map(function(b) {
       var cleanId = b.id.replace('_' + tid, '');
       return { id: cleanId, name: b.nome, emoji: b.emoji, price: +b.preco };
     });
@@ -1509,6 +1511,5 @@ if (e.target===this) closeNewRental();
 });
 checkLogin();
 </script>
-
 </body>
 </html>
