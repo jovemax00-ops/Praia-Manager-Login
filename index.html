@@ -389,6 +389,15 @@ function doLogin() {
   err.style.display = 'none';
   TENANT_ID = code.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
   localStorage.setItem('pm_tenant', TENANT_ID);
+  ['catalog','rentals','damages','drinks','sales','drinkStock','reservas'].forEach(function(k){
+    localStorage.removeItem('pm_' + k);
+  });
+  catalog = load('catalog', CATALOG_DEFAULT);
+  rentals = load('rentals', []);
+  damages = load('damages', []);
+  drinks = load('drinks', DRINKS_DEFAULT);
+  sales = load('sales', []);
+  reservas = load('reservas', []);
   checkLogin();
 }
 
